@@ -1,37 +1,28 @@
-const express = require("express");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// ✅ Middlewares
-app.use(cors({
-  origin: "*", // Allow all origins (you can limit later to your frontend domain)
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type"],
-}));
-app.use(express.json()); // Parse JSON body
+app.use(cors());
+app.use(express.json());
 
-// ✅ Test route
 app.get("/", (req, res) => {
-  res.send("✅ Backend is live and running on Railway!");
+  res.send("Hello from Railway backend!");
 });
 
-// ✅ Contact form route
-app.post("/contact", (req, res) => {
+app.post("/api/contact", (req, res) => {
   const { name, email, phone, message } = req.body;
 
-  console.log("📩 New Contact Form Submission:", { name, email, phone, message });
-
   if (!name || !email || !message) {
-    return res.status(400).json({ message: "Please fill all required fields" });
+    return res.status(400).json({ error: "Please fill all required fields" });
   }
 
-  // You can later integrate email service or database here
-  res.status(200).json({ message: "Form submitted successfully!" });
+  console.log("📩 New message received:", req.body);
+
+  res.status(200).json({ message: "Message sent successfully!" });
 });
 
-// ✅ Start server
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
