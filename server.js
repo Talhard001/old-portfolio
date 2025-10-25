@@ -2,27 +2,23 @@ import express from "express";
 import cors from "cors";
 
 const app = express();
-const PORT = process.env.PORT || 8080;
 
-// ✅ Middleware
-app.use(cors());
+// Allow requests from your Vercel frontend
+app.use(cors({
+  origin: "https://react-portfolio-beta-taupe.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+}));
+
 app.use(express.json());
 
-// ✅ API Route
+// Your routes
 app.post("/api/contact", (req, res) => {
-  const { name, email, message } = req.body;
-
-  console.log("Contact form received:", { name, email, message });
-
-  // Normally yahan database ya email send hota hai.
-  res.status(200).json({ success: true, message: "Form submitted successfully!" });
+  // handle contact submission
+  res.json({ message: "Form submitted successfully" });
 });
 
-// ✅ Default Route
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
-
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
