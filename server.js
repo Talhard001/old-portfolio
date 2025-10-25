@@ -1,17 +1,12 @@
-import express from "express";
-import cors from "cors";                 // import first
-import contactRoutes from "./routes/contact.js";
+const express = require("express");
+const app = express();
 
-const app = express();                  // ← declare app BEFORE using it
+const PORT = process.env.PORT || 8080;
 
-// Middleware
-app.use(cors());                        // now this works
-app.use(express.json());
+app.get("/", (req, res) => {
+  res.send("Backend is live and running on Railway!");
+});
 
-// Routes
-app.use("/api/contact", contactRoutes);
-
-// Start server
-app.listen(5000, () => {
-  console.log("✅ Server is running on port 5000");
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Server running on port ${PORT}`);
 });
