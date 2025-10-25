@@ -4,7 +4,13 @@ import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://react-portfolio-beta-taupe.vercel.app",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
 app.use(express.json());
 
 app.get("/", (req, res) => {
