@@ -1,50 +1,23 @@
-import express from 'express';
-import fs from 'fs';
-const router = express.Router();
+import express from "express";
+import cors from "cors";
+import contactRoutes from "./contact.js";
 
-// POST /api/contact — save contact
-router.post('/', (req, res) => {
-  const filePath = 'contacts.json';
-  let contacts = [];
+const app = express();
 
-  try {
-    if (fs.existsSync(filePath)) {
-      const data = fs.readFileSync(filePath, 'utf-8').trim();
-      if (data) contacts = JSON.parse(data);
-    } else {
-      fs.writeFileSync(filePath, JSON.stringify([]));
-    }
-  } catch (err) {
-    console.error('Error reading or parsing contacts.json:', err.message);
-    return res.status(500).json({ error: 'Server error reading contacts' });
-  }
+// Middleware
+app.use(express.json());
 
-  contacts.push(req.body);
+// CORS
+app.use(cors({
+  origin: "https://react-portfolio-beta-taupe.vercel.app", // your Vercel frontend
+  methods: ["GET", "POST"],
+}));
 
-  try {
-    fs.writeFileSync(filePath, JSON.stringify(contacts, null, 2));
-    res.status(201).json({ message: 'Contact saved successfully!' });
-  } catch (err) {
-    console.error('Error writing to contacts.json:', err.message);
-    res.status(500).json({ error: 'Server error saving contact' });
-  }
+// Routes
+app.use("/api/contact", contactRoutes);
+
+// Port (Railway sets process.env.PORT)
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
-
-// ✅ GET /api/contact — fetch all contacts
-router.get('/', (req, res) => {
-  const filePath = 'contacts.json';
-  try {
-    if (fs.existsSync(filePath)) {
-      const data = fs.readFileSync(filePath, 'utf-8');
-      const contacts = data ? JSON.parse(data) : [];
-      res.json(contacts);
-    } else {
-      res.json([]);
-    }
-  } catch (err) {
-    console.error('Error reading contacts.json:', err.message);
-    res.status(500).json({ error: 'Server error fetching contacts' });
-  }
-});
-
-export default router;
